@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peak Performance Protocol — Momine</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E2C97E;
+      --gold-dim: rgba(201,168,76,0.15);
+      --gold-border: rgba(201,168,76,0.3);
+      --black: #050505;
+      --dark: #0A0A0A;
+      --surface: #101010;
+      --surface2: #171717;
+      --text: #F0EBE3;
+      --text2: #8A847C;
+      --muted: #4A4540;
+      --line: rgba(255,255,255,0.07);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 20px 48px;
+      display: flex; justify-content: space-between; align-items: center;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.98) 0%, transparent 100%);
+      backdrop-filter: blur(4px);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px; font-weight: 800;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text); text-decoration: none;
+    }
+    .nav-spots {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; font-family: 'Outfit', sans-serif; font-weight: 500;
+      color: var(--gold);
+    }
+    .nav-spot-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .nav-cta {
+      font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--black); background: var(--gold);
+      text-decoration: none; padding: 10px 24px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 0 0 80px;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=1600&q=80');
+      background-size: cover; background-position: center 30%;
+      filter: brightness(0.25) saturate(0.6);
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.3) 0%, rgba(5,5,5,0.5) 50%, rgba(5,5,5,0.95) 100%);
+    }
+    .hero-inner {
+      position: relative; z-index: 2;
+      max-width: 1100px; margin: 0 auto; padding: 0 48px;
+      width: 100%;
+    }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 10px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 32px;
+      opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards 0.2s;
+    }
+    .hero-tag::before { content:''; width:24px; height:1px; background:var(--gold); }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(52px, 9vw, 120px);
+      font-weight: 800; line-height: 0.95;
+      letter-spacing: -0.03em; text-transform: uppercase;
+      margin-bottom: 32px;
+      opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards 0.4s;
+    }
+    .hero-title .accent { color: var(--gold); display: block; }
+    .hero-title .thin { font-weight: 400; color: var(--text2); display: block; }
+    .hero-bottom {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 40px;
+      opacity: 0; animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) forwards 0.6s;
+    }
+    .hero-sub {
+      font-size: 16px; color: var(--text2); max-width: 480px; line-height: 1.8;
+    }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+    .hero-cta-group { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; flex-shrink: 0; }
+    .btn-hero {
+      display: inline-block; padding: 16px 40px;
+      background: var(--gold); color: var(--black);
+      font-family: 'Outfit', sans-serif; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.25em; text-transform: uppercase; text-decoration: none;
+      transition: background 0.3s, transform 0.2s; white-space: nowrap;
+    }
+    .btn-hero:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .hero-scroll-hint { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--muted); }
+
+    /* MARQUEE */
+    .marquee-wrap { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 14px 0; overflow: hidden; background: var(--dark); }
+    .marquee-track { display: flex; animation: marquee 20s linear infinite; white-space: nowrap; }
+    .marquee-item { display: inline-flex; align-items: center; gap: 16px; padding: 0 32px; font-size: 10px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--muted); font-family: 'Outfit', sans-serif; }
+    .mdot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; flex-shrink: 0; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* SPOTS BANNER */
+    .spots-banner {
+      background: var(--gold);
+      padding: 16px 48px;
+      display: flex; justify-content: center; align-items: center; gap: 16px;
+    }
+    .spots-text {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase; color: var(--black);
+    }
+    .spots-count {
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--black);
+    }
+    .spots-divider { width: 1px; height: 20px; background: rgba(0,0,0,0.2); }
+
+    /* SECTIONS */
+    .section-label {
+      font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 500;
+      letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold);
+      display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+    }
+    .section-label::before { content:''; width:20px; height:1px; background:var(--gold); }
+
+    /* STATEMENT */
+    .statement { padding: 140px 48px; }
+    .statement-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .statement-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 4.5vw, 60px); font-weight: 700; line-height: 1.1;
+      text-transform: uppercase; letter-spacing: -0.02em;
+    }
+    .statement-title em { font-style: normal; color: var(--gold); display: block; }
+    .statement-right { }
+    .statement-body { font-size: 16px; color: var(--text2); line-height: 1.9; }
+    .statement-body strong { color: var(--text); font-weight: 500; }
+
+    /* PROBLEM */
+    .problem-section { padding: 0 48px 140px; }
+    .problem-inner { max-width: 1100px; margin: 0 auto; }
+    .problem-header { margin-bottom: 48px; }
+    .problem-grid { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--line); }
+    .problem-cell {
+      padding: 40px 36px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      position: relative; transition: background 0.3s;
+    }
+    .problem-cell:nth-child(3n){border-right:none}
+    .problem-cell:nth-child(n+4){border-bottom:none}
+    .problem-cell:hover{background:var(--surface)}
+    .problem-cell::after{content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gold);transition:width 0.4s}
+    .problem-cell:hover::after{width:100%}
+    .problem-num { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 14px; }
+    .problem-text { font-size: 14px; color: var(--text2); line-height: 1.7; }
+
+    /* IMAGE SECTION */
+    .img-section { padding: 0 48px 140px; }
+    .img-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .img-card { position: relative; overflow: hidden; aspect-ratio: 4/5; }
+    .img-card img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.5) saturate(0.7); transition: filter 0.6s, transform 0.6s; }
+    .img-card:hover img { filter: brightness(0.65) saturate(0.8); transform: scale(1.03); }
+    .img-card-label {
+      position: absolute; bottom: 32px; left: 32px;
+      font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: -0.01em; color: var(--text);
+    }
+    .img-card-label span { color: var(--gold); display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.3em; font-family: 'Outfit', sans-serif; margin-bottom: 4px; }
+
+    /* BLOODWORK */
+    .bloodwork { padding: 140px 48px; background: var(--dark); position: relative; }
+    .bloodwork::before,.bloodwork::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold-border),transparent)}
+    .bloodwork::before{top:0}.bloodwork::after{bottom:0}
+    .bloodwork-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
+    .bw-title { font-family: 'Syne', sans-serif; font-size: clamp(32px,4vw,52px); font-weight: 700; line-height: 1.1; text-transform: uppercase; letter-spacing: -0.02em; }
+    .bw-title em { font-style: normal; color: var(--gold); }
+    .bw-body { font-size: 15px; color: var(--text2); line-height: 1.9; margin-top: 24px; }
+    .markers { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 0; }
+    .marker { background: var(--surface2); padding: 22px 24px; border: 1px solid var(--line); }
+    .marker strong { display: block; font-family: 'Outfit', sans-serif; font-size: 10px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 4px; }
+    .marker span { font-size: 13px; color: var(--text2); }
+
+    /* PHASES */
+    .phases-section { padding: 140px 48px; }
+    .phases-inner { max-width: 1100px; margin: 0 auto; }
+    .phases-header { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: end; margin-bottom: 72px; }
+    .phases-title { font-family: 'Syne', sans-serif; font-size: clamp(36px,4.5vw,60px); font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.05; }
+    .phases-title em { font-style: normal; color: var(--gold); }
+    .phases-desc { font-size: 15px; color: var(--text2); line-height: 1.9; padding-bottom: 6px; }
+    .phase-row { display: grid; grid-template-columns: 60px 1fr; border-top: 1px solid var(--line); transition: background 0.3s; }
+    .phase-row:last-child{border-bottom:1px solid var(--line)}
+    .phase-row:hover{background:var(--surface)}
+    .phase-idx { padding: 48px 0; display: flex; justify-content: center; align-items: flex-start; }
+    .phase-num-txt { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; writing-mode: vertical-rl; }
+    .phase-body { padding: 48px 48px 48px 32px; display: grid; grid-template-columns: 200px 1fr; gap: 48px; border-left: 1px solid var(--line); }
+    .phase-meta { }
+    .phase-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; }
+    .phase-wk { font-size: 12px; color: var(--muted); }
+    .phase-heading { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.01em; }
+    .phase-text { font-size: 14px; color: var(--text2); line-height: 1.85; }
+
+    /* INCLUDES */
+    .includes-section { padding: 0 48px 140px; }
+    .includes-inner { max-width: 1100px; margin: 0 auto; }
+    .includes-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 2px; }
+    .include-card { background: var(--surface); padding: 36px 28px; transition: background 0.3s; border: 1px solid var(--line); }
+    .include-card:hover{background:var(--surface2)}
+    .include-num { font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--gold); letter-spacing: 0.2em; margin-bottom: 20px; }
+    .include-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .include-desc { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+    /* APP */
+    .app-section { padding: 0 48px 140px; }
+    .app-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .app-image { position: relative; overflow: hidden; min-height: 500px; }
+    .app-image img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.45) saturate(0.7); }
+    .app-image-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(5,5,5,0.9) 0%, transparent 60%); }
+    .app-image-label {
+      position: absolute; bottom: 32px; left: 32px;
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: -0.02em; color: var(--text);
+    }
+    .app-content { display: flex; flex-direction: column; justify-content: center; padding: 20px 0; }
+    .app-title { font-family: 'Syne', sans-serif; font-size: clamp(28px,3.5vw,44px); font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 20px; }
+    .app-title em { font-style: normal; color: var(--gold); }
+    .app-body { font-size: 15px; color: var(--text2); line-height: 1.9; margin-bottom: 36px; }
+    .app-list { list-style: none; }
+    .app-list li { padding: 14px 0; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--text2); display: flex; gap: 14px; align-items: flex-start; }
+    .app-list li::before { content:'◆'; color:var(--gold); font-size:8px; flex-shrink:0; margin-top:5px; }
+
+    /* FOR WHO */
+    .forwho-section { padding: 140px 48px; background: var(--dark); position: relative; }
+    .forwho-section::before,.forwho-section::after{content:'';position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold-border),transparent)}
+    .forwho-section::before{top:0}.forwho-section::after{bottom:0}
+    .forwho-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 100px; }
+    .forwho-title { font-family: 'Syne', sans-serif; font-size: clamp(32px,4vw,52px); font-weight: 700; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; }
+    .forwho-title em { font-style: normal; color: var(--gold); display: block; }
+    .forwho-list { list-style: none; margin-top: 16px; }
+    .forwho-list li { padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--text2); display: flex; align-items: center; gap: 16px; }
+    .forwho-list li strong { color: var(--text); font-weight: 500; }
+    .forwho-list li::before { content:''; width:5px; height:5px; background:var(--gold); border-radius:50%; flex-shrink:0; }
+
+    /* GUARANTEE */
+    .guarantee { padding: 140px 48px; text-align: center; position: relative; overflow: hidden; }
+    .guarantee-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=1600&q=80');
+      background-size: cover; background-position: center;
+      filter: brightness(0.1) saturate(0.4);
+    }
+    .guarantee-overlay { position: absolute; inset: 0; background: rgba(5,5,5,0.7); }
+    .guarantee-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+    .guarantee-title { font-family: 'Syne', sans-serif; font-size: clamp(40px,6vw,80px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.03em; line-height: 1; }
+    .guarantee-title em { font-style: normal; color: var(--gold); display: block; margin-top: 8px; }
+    .g-line { width: 60px; height: 2px; background: var(--gold); margin: 40px auto; }
+    .guarantee-body { font-size: 16px; color: var(--text2); line-height: 1.9; max-width: 500px; margin: 0 auto; }
+
+    /* PRICING */
+    .pricing-section { padding: 140px 48px; }
+    .pricing-inner { max-width: 1100px; margin: 0 auto; }
+
+    /* Spots */
+    .spots-block {
+      background: var(--surface); border: 1px solid var(--gold-border);
+      padding: 24px 40px; margin-bottom: 2px;
+      display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    }
+    .spots-left { display: flex; align-items: center; gap: 14px; }
+    .spots-indicator { display: flex; gap: 6px; align-items: center; }
+    .spot-pip {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--gold); border: 1px solid var(--gold);
+    }
+    .spot-pip.empty { background: transparent; border: 1px solid var(--muted); }
+    .spots-label { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.15em; color: var(--gold); }
+    .spots-sub { font-size: 12px; color: var(--muted); }
+
+    .pricing-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2px; }
+    .pricing-header-title { font-family: 'Syne', sans-serif; font-size: clamp(36px,4vw,56px); font-weight: 800; text-transform: uppercase; letter-spacing: -0.03em; }
+    .pricing-note { font-size: 12px; color: var(--muted); text-align: right; line-height: 1.6; }
+
+    .pricing-main { display: grid; grid-template-columns: 1fr 340px; gap: 2px; margin-bottom: 2px; }
+    .pricing-feature { background: var(--surface); padding: 56px; border: 1px solid var(--line); }
+    .p-tag { font-size: 10px; font-weight: 500; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+    .p-name { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .p-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 40px; }
+    .p-list { list-style: none; }
+    .p-list li { padding: 13px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--text2); display: flex; gap: 14px; align-items: flex-start; }
+    .p-list li::before { content:'◆'; color:var(--gold); font-size:8px; flex-shrink:0; margin-top:5px; }
+    .p-list li strong { color: var(--text); font-weight: 500; }
+
+    .pricing-cta { background: var(--gold); padding: 56px 40px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--gold); }
+    .price-amount { font-family: 'Syne', sans-serif; font-size: clamp(48px, 5vw, 60px); font-weight: 800; line-height: 1; color: var(--black); letter-spacing: -0.04em; }
+    .price-cur { font-size: 24px; font-weight: 400; vertical-align: super; }
+    .price-period { font-size: 11px; color: rgba(0,0,0,0.5); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 8px; margin-bottom: 28px; font-weight: 500; }
+    .price-div { width: 100%; height: 1px; background: rgba(0,0,0,0.15); margin: 20px 0 28px; }
+    .price-alt { font-size: 14px; color: rgba(0,0,0,0.7); margin-bottom: 40px; font-weight: 500; }
+    .price-alt strong { color: var(--black); font-weight: 700; }
+    .btn-buy { display: block; padding: 18px; background: var(--black); color: var(--gold); text-align: center; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; transition: background 0.3s; }
+    .btn-buy:hover { background: #111; }
+    .price-limit { font-size: 10px; color: rgba(0,0,0,0.5); text-align: center; margin-top: 14px; letter-spacing: 0.08em; font-weight: 500; text-transform: uppercase; }
+
+    .pricing-other { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .tier-card { background: var(--surface); padding: 40px; border: 1px solid var(--line); transition: background 0.3s; }
+    .tier-card:hover{background:var(--surface2)}
+    .tier-label { font-size: 10px; font-weight: 500; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .tier-price { font-family: 'Syne', sans-serif; font-size: 36px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 8px; }
+    .tier-price span { font-size: 16px; font-weight: 400; color: var(--muted); }
+    .tier-desc { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+    /* FOOTER */
+    footer { padding: 56px 48px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+    .footer-brand { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+    .footer-tag { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--muted); font-weight: 500; }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .d1{transition-delay:0.1s} .d2{transition-delay:0.2s} .d3{transition-delay:0.3s}
+
+    /* ── TABLET ── */
+    @media(max-width:900px){
+      nav { padding: 16px 24px; }
+      .nav-spots { display: none; }
+
+      .hero { padding-bottom: 60px; }
+      .hero-inner { padding: 0 24px; }
+      .hero-title { font-size: clamp(48px, 10vw, 80px); }
+      .hero-bottom { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .hero-cta-group { align-items: flex-start; }
+
+      .statement-inner,
+      .bloodwork-inner,
+      .phases-header,
+      .app-inner,
+      .forwho-inner { grid-template-columns: 1fr; gap: 40px; }
+
+      .problem-grid { grid-template-columns: 1fr 1fr; }
+      .problem-cell:nth-child(3n) { border-right: 1px solid var(--line); }
+      .problem-cell:nth-child(2n) { border-right: none; }
+
+      .includes-grid { grid-template-columns: 1fr 1fr; }
+      .phase-body { grid-template-columns: 1fr; gap: 12px; padding: 32px 20px; }
+
+      .pricing-main { grid-template-columns: 1fr; }
+      .pricing-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .pricing-other { grid-template-columns: 1fr 1fr; }
+
+      section,
+      .statement,
+      .bloodwork,
+      .phases-section,
+      .includes-section,
+      .app-section,
+      .forwho-section,
+      .guarantee,
+      .pricing-section { padding-left: 24px; padding-right: 24px; }
+
+      footer { flex-direction: column; gap: 10px; text-align: center; padding: 40px 24px; }
+    }
+
+    /* ── MOBILE ── */
+    @media(max-width:540px){
+
+      /* NAV */
+      nav { padding: 14px 20px; }
+      .nav-logo { font-size: 15px; }
+      .nav-cta { font-size: 9px; padding: 8px 16px; letter-spacing: 0.15em; }
+
+      /* HERO */
+      .hero { min-height: 100svh; padding-bottom: 48px; }
+      .hero-inner { padding: 0 20px; }
+      .hero-tag { font-size: 8px; letter-spacing: 0.3em; margin-bottom: 24px; }
+      .hero-tag::before, .hero-tag::after { width: 16px; }
+      .hero-title { font-size: clamp(42px, 12vw, 64px); line-height: 0.95; margin-bottom: 24px; }
+      .hero-sub { font-size: 14px; }
+      .hero-bottom { gap: 20px; }
+      .btn-hero { padding: 14px 28px; font-size: 10px; }
+      .hero-scroll-hint { font-size: 9px; }
+      .hero-scroll { bottom: 24px; }
+
+      /* MARQUEE */
+      .marquee-item { font-size: 8px; padding: 0 20px; }
+
+      /* SPOTS BANNER */
+      .spots-banner { padding: 12px 20px; flex-wrap: wrap; gap: 8px; justify-content: center; }
+      .spots-text { font-size: 11px; }
+      .spots-count { font-size: 16px; }
+
+      /* SECTIONS — reduce padding on mobile */
+      section,
+      .statement,
+      .bloodwork,
+      .phases-section,
+      .includes-section,
+      .app-section,
+      .forwho-section,
+      .guarantee,
+      .pricing-section { padding-top: 80px; padding-bottom: 80px; padding-left: 20px; padding-right: 20px; }
+
+      /* SECTION LABEL */
+      .section-label { font-size: 8px; letter-spacing: 0.35em; margin-bottom: 20px; }
+
+      /* STATEMENT */
+      .statement-inner { gap: 28px; }
+      .statement-title { font-size: clamp(28px, 8vw, 40px); }
+      .statement-body { font-size: 14px; }
+
+      /* PROBLEM GRID */
+      .problem-grid { grid-template-columns: 1fr; }
+      .problem-cell { border-right: none !important; padding: 28px 24px; }
+      .problem-num { font-size: 10px; }
+      .problem-text { font-size: 13px; }
+
+      /* STORY SECTION */
+      .story-section { padding: 80px 20px; }
+
+      /* BLOODWORK */
+      .bloodwork-inner { gap: 36px; }
+      .bw-title { font-size: clamp(26px, 7vw, 36px); }
+      .bw-body { font-size: 14px; }
+      .markers { grid-template-columns: 1fr 1fr; }
+      .marker { padding: 16px 16px; }
+      .marker strong { font-size: 8px; }
+      .marker span { font-size: 11px; }
+
+      /* PHASES */
+      .phases-header { gap: 24px; }
+      .phases-title { font-size: clamp(28px, 8vw, 40px); }
+      .phases-desc { font-size: 14px; }
+      .phase-row { grid-template-columns: 48px 1fr; }
+      .phase-idx { padding: 28px 0; }
+      .phase-body { padding: 28px 16px 28px 16px; gap: 8px; }
+      .phase-tag { font-size: 8px; }
+      .phase-wk { font-size: 10px; }
+      .phase-heading { font-size: 18px; }
+      .phase-text { font-size: 13px; }
+
+      /* INCLUDES */
+      .includes-grid { grid-template-columns: 1fr; }
+      .include-card { padding: 28px 24px; }
+      .include-num { font-size: 28px; margin-bottom: 14px; }
+      .include-title { font-size: 11px; }
+      .include-desc { font-size: 12px; }
+
+      /* APP */
+      .app-inner { gap: 28px; }
+      .app-title { font-size: clamp(24px, 7vw, 36px); }
+      .app-body { font-size: 14px; }
+      .app-list li { font-size: 13px; padding: 12px 0; }
+
+      /* FOR WHO */
+      .forwho-inner { gap: 32px; }
+      .forwho-title { font-size: clamp(26px, 7vw, 36px); }
+      .forwho-list li { font-size: 13px; padding: 14px 0; }
+
+      /* GUARANTEE */
+      .guarantee { padding: 80px 20px; }
+      .guarantee::before { font-size: 60px; }
+      .guarantee-title { font-size: clamp(36px, 10vw, 56px); }
+      .guarantee-body { font-size: 14px; }
+      .g-line { margin: 28px auto; }
+
+      /* TESTIMONIALS */
+      .testimonials-grid-mobile { grid-template-columns: 1fr !important; }
+
+      /* PRICING */
+      .spots-block { flex-direction: column; align-items: flex-start; gap: 16px; padding: 20px 20px; }
+      .spots-block a { width: 100%; text-align: center; }
+      .pricing-header-title { font-size: clamp(28px, 8vw, 40px); }
+      .pricing-feature { padding: 32px 24px; }
+      .p-name { font-size: 22px; }
+      .p-list li { font-size: 13px; padding: 10px 0; }
+      .pricing-cta { padding: 32px 24px; }
+      .price-amount { font-size: clamp(48px, 12vw, 60px); }
+      .price-period { font-size: 10px; }
+      .btn-buy { padding: 16px; font-size: 10px; }
+      .pricing-other { grid-template-columns: 1fr; }
+      .tier-card { padding: 28px 24px; }
+      .tier-price { font-size: 28px; }
+
+      /* ABOUT SECTION */
+      .about-grid-mobile { grid-template-columns: 1fr !important; }
+      .about-photo-mobile { min-height: 400px !important; }
+      .about-content-mobile { padding: 36px 24px !important; }
+
+      /* FAQ */
+      .faq-grid-mobile { grid-template-columns: 1fr !important; gap: 40px !important; }
+      summary { padding: 20px 20px !important; font-size: 13px !important; }
+
+      /* FOOTER */
+      footer { padding: 32px 20px; }
+      .footer-brand { font-size: 16px; }
+      .footer-tag { font-size: 9px; }
+    }
+  
+    /* NAV MOBILE */
+    .nav-mobile-btn { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+    .nav-mobile-btn span { display: block; width: 22px; height: 2px; background: var(--text); transition: 0.3s; }
+    @media(max-width:900px){
+      .nav-mobile-btn { display: flex; }
+      .nav-links { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5,5,5,0.97); flex-direction: column; align-items: center; justify-content: center; gap: 32px; z-index: 99; }
+      .nav-links.open { display: flex; }
+      .nav-link { font-size: 16px; }
+      .nav-cta { font-size: 14px; padding: 14px 36px; }
+    }
+  
+    footer { padding: 48px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-brand { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+    .footer-link { font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.3s; }
+    .footer-link:hover { color: var(--text); }
+    .footer-copy { font-size: 11px; color: var(--muted); }
+    @media(max-width:900px){ footer { flex-direction: column; text-align: center; padding: 32px 24px; } .footer-links { justify-content: center; } }
+  
+    /* MOBILE BASE FIX */
+    @media(max-width:600px){
+      .hero-title { font-size: clamp(36px, 10vw, 52px) !important; }
+      .section-title { font-size: clamp(26px, 8vw, 40px) !important; }
+      .cta-title { font-size: clamp(36px, 10vw, 52px) !important; }
+      .pricing-amount { font-size: 44px !important; }
+      .cta-price { font-size: 56px !important; }
+      .hero { padding-left: 24px !important; padding-right: 24px !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Momine</a>
+  <div class="nav-spots">
+    <div class="nav-spot-dot"></div>
+    5 spots beschikbaar
+  </div>
+  <a href="#pricing" class="nav-cta">Start het gesprek</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-tag">Peak Performance Protocol · 90 Dagen</div>
+    <h1 class="hero-title">
+      Van uitgeput
+      <em class="accent">naar optimaal</em>
+      <span class="thin">in 90 dagen.</span>
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-sub">
+        In 90 dagen optimaliseer je jouw energie, hormonen en lichaam — zodat je <strong>elke dag scherper, productiever en sterker</strong> presteert. In je business én privé.
+      </p>
+      <div class="hero-cta-group">
+        <a href="intake.html" class="btn-hero">Claim je spot</a>
+        <span class="hero-scroll-hint">Scroll om meer te zien ↓</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="mdot"></span>90 Dagen 1-op-1</span>
+    <span class="marquee-item"><span class="mdot"></span>Bloedwaarden Analyse</span>
+    <span class="marquee-item"><span class="mdot"></span>Exclusieve App</span>
+    <span class="marquee-item"><span class="mdot"></span>Winnaarsmentaliteit</span>
+    <span class="marquee-item"><span class="mdot"></span>Hormoon Optimalisatie</span>
+    <span class="marquee-item"><span class="mdot"></span>Peak Performance</span>
+    <span class="marquee-item"><span class="mdot"></span>Privé & Zakelijk</span>
+    <span class="marquee-item"><span class="mdot"></span>5 Spots Beschikbaar</span>
+    <span class="marquee-item"><span class="mdot"></span>90 Dagen 1-op-1</span>
+    <span class="marquee-item"><span class="mdot"></span>Bloedwaarden Analyse</span>
+    <span class="marquee-item"><span class="mdot"></span>Exclusieve App</span>
+    <span class="marquee-item"><span class="mdot"></span>Winnaarsmentaliteit</span>
+    <span class="marquee-item"><span class="mdot"></span>Hormoon Optimalisatie</span>
+    <span class="marquee-item"><span class="mdot"></span>Peak Performance</span>
+    <span class="marquee-item"><span class="mdot"></span>Privé & Zakelijk</span>
+    <span class="marquee-item"><span class="mdot"></span>5 Spots Beschikbaar</span>
+  </div>
+</div>
+
+<!-- STATEMENT -->
+<section class="statement">
+  <div class="statement-inner reveal">
+    <div>
+      <div class="section-label">De belofte</div>
+      <h2 class="statement-title">
+        Jouw lichaam<br>is je<br>
+        <em>grootste<br>business asset.</em>
+      </h2>
+    </div>
+    <div class="statement-right">
+      <p class="statement-body">
+        Je onderneemt een business — maar vergeet de <strong>belangrijkste business</strong> van allemaal.<br><br>
+        Marketing, mensen, systemen. Je business groeit. Maar je energie instort 's middags. Je focus valt weg onder druk. Je lichaam werkt niet mee.<br><br>
+        <strong>En dat begint je omzet te raken.</strong><br><br>
+        In dit traject lossen we precies dat op. Geen dieet, geen motivatiepraat. Een systeem dat jouw lichaam en hoofd op topniveau brengt — zodat je onderneming dat ook doet.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- STORY / TRANSFORMATION -->
+<section style="padding: 140px 48px; background: var(--dark); position:relative;">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold-border),transparent);"></div>
+  <div style="max-width:760px; margin:0 auto;" class="reveal">
+
+    <div class="section-label">Mijn verhaal</div>
+
+    <!-- BEFORE -->
+    <div style="margin-bottom:48px;">
+      <p style="font-size:11px; font-weight:500; letter-spacing:0.3em; text-transform:uppercase; color:var(--muted); margin-bottom:16px;">Vroeger</p>
+      <p style="font-family:'Syne',sans-serif; font-size:clamp(22px,3vw,32px); font-weight:700; text-transform:uppercase; letter-spacing:-0.02em; line-height:1.2; color:var(--text2);">
+        Ik was coach, ondernemer én vechtsporter tegelijk.<br>
+        <span style="color:var(--text);">Maar mijn lichaam en business trokken niet samen op.</span>
+      </p>
+    </div>
+
+    <div style="width:40px; height:2px; background:var(--gold); margin-bottom:48px;"></div>
+
+    <!-- TURNING POINT -->
+    <p style="font-size:16px; color:var(--text2); line-height:1.9; margin-bottom:32px;">
+      12 jaar geleden besefte ik iets wat de meeste ondernemers nooit leren: <strong style="color:var(--text);">ondernemen is topsport.</strong> Je bent dagelijks in competitie — met concurrenten, met je eigen emoties, met druk die van alle kanten komt. En net als in de sport: als jouw lichaam niet op niveau is, verlies je.
+    </p>
+
+    <p style="font-size:16px; color:var(--text2); line-height:1.9; margin-bottom:32px;">
+      Ik heb het zelf meegemaakt. Als actief vechtsporter op het hoogste niveau leerde ik wat het betekent om je lichaam als wapen in te zetten. Niet alleen in de ring — maar ook in de boardroom. <strong style="color:var(--text);">Betere energie. Scherpere focus. Meer discipline.</strong> Alles wat je nodig hebt om op topniveau te ondernemen.
+    </p>
+
+    <!-- AFTER -->
+    <div style="background:var(--surface); border:1px solid var(--gold-border); padding:40px 40px; margin-bottom:40px;">
+      <p style="font-size:11px; font-weight:500; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); margin-bottom:16px;">Het resultaat</p>
+      <p style="font-size:16px; color:var(--text); line-height:1.9;">
+        Nu help ik ondernemers hetzelfde systeem toepassen — zonder dieet, challenges of onzin schema's. <strong>Een systeem dat volledig op jou is afgestemd.</strong> Zodat jij presteert op het niveau dat jouw business verdient.
+      </p>
+    </div>
+
+    <a href="intake.html" style="display:inline-flex; align-items:center; gap:12px; padding:16px 40px; background:var(--gold); color:var(--black); font-family:'Syne',sans-serif; font-size:11px; font-weight:800; letter-spacing:0.2em; text-transform:uppercase; text-decoration:none; transition:background 0.3s;" onmouseover="this.style.background='#E2C97E'" onmouseout="this.style.background='#C9A84C'">
+      Start jouw transformatie →
+    </a>
+
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem-section">
+  <div class="problem-inner">
+    <div class="problem-header reveal">
+      <div class="section-label">Herken jij dit?</div>
+    </div>
+    <div class="problem-grid reveal">
+      <div class="problem-cell"><p class="problem-num">01</p><p class="problem-text">Energie die 's middags instort terwijl je nog uren te gaan hebt</p></div>
+      <div class="problem-cell"><p class="problem-num">02</p><p class="problem-text">Focus die wegvalt zodra de druk oploopt</p></div>
+      <div class="problem-cell"><p class="problem-num">03</p><p class="problem-text">Slaap die niet herstelt, hoe lang je ook slaapt</p></div>
+      <div class="problem-cell"><p class="problem-num">04</p><p class="problem-text">Een lichaam dat niet klopt met wie je bent en wie je wil zijn</p></div>
+      <div class="problem-cell"><p class="problem-num">05</p><p class="problem-text">Discipline die mist buiten business — maar wel verwacht wordt binnen</p></div>
+      <div class="problem-cell"><p class="problem-num">06</p><p class="problem-text">Hormonen die nooit geoptimaliseerd zijn en je meer kosten dan je weet</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section style="padding: 0 48px 140px;">
+  <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:2px;" class="reveal about-grid-mobile">
+
+    <!-- PHOTO -->
+    <div style="position:relative; overflow:hidden; min-height:600px;" class="about-photo-mobile">
+      <img src="momine-photo.jpeg" alt="Momine" style="width:100%; height:100%; object-fit:cover; object-position:75% center; filter:brightness(0.85) saturate(0.9);">
+      <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(5,5,5,0.7) 0%, transparent 50%);"></div>
+      <div style="position:absolute; bottom:32px; left:32px;">
+        <p style="font-family:'Outfit',sans-serif; font-size:10px; font-weight:500; letter-spacing:0.4em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">Coach & Ondernemer</p>
+        <p style="font-family:'Syne',sans-serif; font-size:28px; font-weight:800; text-transform:uppercase; letter-spacing:-0.02em; color:var(--text);">Momine</p>
+      </div>
+    </div>
+
+    <!-- TEXT -->
+    <div style="background:var(--surface); border:1px solid var(--line); padding:64px 56px;" class="about-content-mobile display:flex; flex-direction:column; justify-content:center;">
+      <div class="section-label">Over mij</div>
+
+      <h2 style="font-family:'Syne',sans-serif; font-size:clamp(28px,3vw,40px); font-weight:800; text-transform:uppercase; letter-spacing:-0.02em; line-height:1.1; margin-bottom:32px;">
+        12 jaar coach.<br>10 jaar ondernemer.<br><span style="color:var(--gold);">Vechtsporter.</span>
+      </h2>
+
+      <div style="display:flex; flex-direction:column; gap:16px;">
+        <p style="font-size:15px; color:var(--text2); line-height:1.9;">
+          Ik werk met ondernemers die <strong style="color:var(--text);font-weight:500;">veel dragen.</strong><br>
+          Verantwoordelijkheid. Stress. Druk om te presteren.
+        </p>
+        <p style="font-size:15px; color:var(--text2); line-height:1.9;">
+          Maar ondertussen: je energie is laag, je focus is niet scherp, je lichaam werkt niet meer mee zoals het moet. En dat begint je <strong style="color:var(--text);font-weight:500;">business te raken.</strong>
+        </p>
+        <p style="font-size:15px; color:var(--text2); line-height:1.9;">
+          <strong style="color:var(--text);font-weight:500;">Ondernemen is topsport.</strong> En als jouw lichaam en hoofd niet op niveau zijn, ga je dat altijd terugzien in je resultaten.
+        </p>
+        <p style="font-size:15px; color:var(--text2); line-height:1.9;">
+          Geen standaard schema's. Geen motivatiepraat. Een systeem dat jouw lichaam, energie en focus optimaliseert — afgestemd op jouw leven als ondernemer.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); margin-top:48px;">
+        <div style="background:var(--surface2); padding:24px 20px; text-align:center;">
+          <p style="font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--gold); line-height:1;">12+</p>
+          <p style="font-size:10px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-top:6px;">Jaar Coach</p>
+        </div>
+        <div style="background:var(--surface2); padding:24px 20px; text-align:center; border-left:1px solid var(--line); border-right:1px solid var(--line);">
+          <p style="font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--gold); line-height:1;">10+</p>
+          <p style="font-size:10px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-top:6px;">Jaar Ondernemer</p>
+        </div>
+        <div style="background:var(--surface2); padding:24px 20px; text-align:center;">
+          <p style="font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--gold); line-height:1;">TOP</p>
+          <p style="font-size:10px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-top:6px;">Vechtsporter</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="padding: 0 48px 140px;">
+  <div style="max-width:1100px; margin:0 auto;">
+    <div class="section-label reveal">Resultaten</div>
+    <h2 class="reveal" style="font-family:'Syne',sans-serif; font-size:clamp(28px,3.5vw,48px); font-weight:800; text-transform:uppercase; letter-spacing:-0.02em; line-height:1.1; margin-bottom:56px;">
+      Wat klanten zeggen.
+    </h2>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:2px;" class="reveal testimonials-grid-mobile">
+
+      <div style="background:var(--surface); border:1px solid var(--line); padding:48px 40px; display:flex; flex-direction:column; justify-content:space-between; transition:background 0.3s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+        <div>
+          <div style="display:flex; gap:4px; margin-bottom:28px;">
+            <span style="color:var(--gold); font-size:14px;">★★★★★</span>
+          </div>
+          <p style="font-size:16px; color:var(--text); line-height:1.75; font-style:italic; margin-bottom:32px;">
+            "Dit traject heeft mijn leven veranderd. En ik meen het als ik zeg: dat gun ik elke ondernemer."
+          </p>
+        </div>
+        <div style="border-top:1px solid var(--line); padding-top:24px; display:flex; align-items:center; gap:16px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:var(--black); flex-shrink:0;">M</div>
+          <div>
+            <p style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:0.05em;">Max</p>
+            <p style="font-size:11px; color:var(--muted); letter-spacing:0.1em;">Ondernemer</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--gold); border:1px solid var(--gold); padding:48px 40px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <div style="display:flex; gap:4px; margin-bottom:28px;">
+            <span style="color:var(--black); font-size:14px; opacity:0.6;">★★★★★</span>
+          </div>
+          <p style="font-size:16px; color:var(--black); line-height:1.75; font-style:italic; margin-bottom:32px;">
+            "Naast dat ik me voor het eerst gehoord voelde door een coach was het traject een belangrijke investering voor mijn bedrijf. Duidelijke progressie mentaal, fysiek en in mijn omzet."
+          </p>
+        </div>
+        <div style="border-top:1px solid rgba(0,0,0,0.15); padding-top:24px; display:flex; align-items:center; gap:16px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:var(--black); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:var(--gold); flex-shrink:0;">M</div>
+          <div>
+            <p style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--black); text-transform:uppercase; letter-spacing:0.05em;">Mohammed</p>
+            <p style="font-size:11px; color:rgba(0,0,0,0.5); letter-spacing:0.1em;">Ondernemer</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface); border:1px solid var(--line); padding:48px 40px; display:flex; flex-direction:column; justify-content:space-between; transition:background 0.3s;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='var(--surface)'">
+        <div>
+          <div style="display:flex; gap:4px; margin-bottom:28px;">
+            <span style="color:var(--gold); font-size:14px;">★★★★★</span>
+          </div>
+          <p style="font-size:16px; color:var(--text); line-height:1.75; font-style:italic; margin-bottom:32px;">
+            "Ik was altijd sceptisch over online coaches, maar Momine heeft mijn beeld veranderd. Meer energie, betere time management, verbeterde bloedwaarden en eindelijk een sixpack haha."
+          </p>
+        </div>
+        <div style="border-top:1px solid var(--line); padding-top:24px; display:flex; align-items:center; gap:16px;">
+          <div style="width:40px; height:40px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Syne',sans-serif; font-size:14px; font-weight:800; color:var(--black); flex-shrink:0;">J</div>
+          <div>
+            <p style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text); text-transform:uppercase; letter-spacing:0.05em;">Jeroen</p>
+            <p style="font-size:11px; color:var(--muted); letter-spacing:0.1em;">Ondernemer</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- BLOODWORK -->
+<section class="bloodwork">
+  <div class="bloodwork-inner reveal">
+    <div>
+      <div class="section-label">De aanpak</div>
+      <h2 class="bw-title">We beginnen waar anderen <em>nooit kijken.</em></h2>
+      <p class="bw-body">Jouw bloed. Testosteron, cortisol, insuline, vitamine D, schildklierfunctie. Je bloedwaarden vertellen wat je lichaam écht doet. Alles wat we bouwen, bouwen we op <strong style="color:var(--text);font-weight:500">harde data</strong> — niet op aannames.</p>
+    </div>
+    <div>
+      <div class="markers">
+        <div class="marker"><strong>Testosteron</strong><span>Energie & drive</span></div>
+        <div class="marker"><strong>Cortisol</strong><span>Stress & herstel</span></div>
+        <div class="marker"><strong>Insuline</strong><span>Vetopslag & focus</span></div>
+        <div class="marker"><strong>Vitamine D</strong><span>Immuun & mood</span></div>
+        <div class="marker"><strong>Schildklier</strong><span>Metabolisme</span></div>
+        <div class="marker"><strong>IJzer / B12</strong><span>Zuurstof & energie</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PHASES -->
+<section class="phases-section" id="programma">
+  <div class="phases-inner">
+    <div class="phases-header reveal">
+      <div>
+        <div class="section-label">Het programma</div>
+        <h2 class="phases-title">90 dagen.<br><em>Gebouwd</em><br>op data.</h2>
+      </div>
+      <p class="phases-desc">Geen generiek plan. Een systeem gebouwd op jouw bloedwaarden, lichaam en schema — elke week aangepast op basis van progressie.</p>
+    </div>
+    <div>
+      <div class="phase-row reveal">
+        <div class="phase-idx"><span class="phase-num-txt">01</span></div>
+        <div class="phase-body">
+          <div><p class="phase-tag">Diagnose & Fundament</p><p class="phase-wk">Week 1</p></div>
+          <div>
+            <h3 class="phase-heading">We beginnen met je bloedwaarden</h3>
+            <p class="phase-text">Voor we ook maar één stap zetten, analyseren we je bloedwaarden. Testosteron, cortisol, insulinegevoeligheid, schildklier, vitamine D — alles wat jouw energie, focus en herstel bepaalt. Jij regelt de check via je huisarts. Wij bouwen het protocol op de resultaten.</p>
+          </div>
+        </div>
+      </div>
+      <div class="phase-row reveal d1">
+        <div class="phase-idx"><span class="phase-num-txt">02</span></div>
+        <div class="phase-body">
+          <div><p class="phase-tag">Executie & Optimalisatie</p><p class="phase-wk">Week 2 – 8</p></div>
+          <div>
+            <h3 class="phase-heading">Wekelijkse begeleiding. Geen excuses.</h3>
+            <p class="phase-text">1-op-1 check-in calls, aanpassingen op basis van progressie, slaap- en energieprotocol op maat, supplementen advies gebaseerd op jouw data, en directe toegang via WhatsApp. Elke week scherper dan de week ervoor.</p>
+          </div>
+        </div>
+      </div>
+      <div class="phase-row reveal d2">
+        <div class="phase-idx"><span class="phase-num-txt">03</span></div>
+        <div class="phase-body">
+          <div><p class="phase-tag">Peak Fase</p><p class="phase-wk">Week 9 – 12</p></div>
+          <div>
+            <h3 class="phase-heading">Presteren op je hoogste niveau</h3>
+            <p class="phase-text">Focus op maximale output — mentaal en fysiek. Discipline en gewoontes worden verankerd zodat dit geen 90-daags project is, maar een permanente upgrade. Je verlaat het traject met een systeem dat zichzelf draait.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INCLUDES -->
+<section class="includes-section">
+  <div class="includes-inner">
+    <div class="includes-grid reveal">
+      <div class="include-card"><div class="include-num">01</div><p class="include-title">Bloedwaarden analyse</p><p class="include-desc">Persoonlijk protocol op basis van jouw resultaten. Geen giswerk.</p></div>
+      <div class="include-card"><div class="include-num">02</div><p class="include-title">Exclusieve app</p><p class="include-desc">Training & voeding op maat. Alleen voor klanten in het traject.</p></div>
+      <div class="include-card"><div class="include-num">03</div><p class="include-title">Wekelijkse calls</p><p class="include-desc">30 min 1-op-1 elke week. Alleen jij — geen groep.</p></div>
+      <div class="include-card"><div class="include-num">04</div><p class="include-title">Direct access</p><p class="include-desc">WhatsApp ma–vr. Vragen krijgen altijd antwoord.</p></div>
+      <div class="include-card"><div class="include-num">05</div><p class="include-title">Exit systeem</p><p class="include-desc">Na 90 dagen een systeem dat je zelf blijft uitvoeren.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section class="app-section">
+  <div class="app-inner reveal">
+    <!-- APP SCREENSHOTS -->
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start;">
+      <div style="position:relative;">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);white-space:nowrap;">Training</div>
+        <div style="margin-top:20px; border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+          <img src="app-screen-1.jpeg" alt="App training schema" style="width:100%;display:block;">
+        </div>
+      </div>
+      <div style="position:relative; margin-top:48px;">
+        <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:500;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);white-space:nowrap;">Check-in</div>
+        <div style="margin-top:20px; border-radius:16px; overflow:hidden; border:1px solid var(--line); box-shadow:0 24px 60px rgba(0,0,0,0.5);">
+          <img src="app-screen-2.jpeg" alt="App check-in" style="width:100%;display:block;">
+        </div>
+      </div>
+    </div>
+
+    <div class="app-content">
+      <div class="section-label">De app</div>
+      <h2 class="app-title">Op maat. <em>In je broekzak.</em></h2>
+      <p class="app-body">Geen PDF's. Geen WhatsApp foto's van schema's. Jouw volledig gepersonaliseerde training- en voedingsschema staat live in onze eigen app — inclusief wekelijkse check-ins zodat we elke week kunnen bijsturen.</p>
+      <ul class="app-list">
+        <li>Op maat training- en voedingsschema's per dag</li>
+        <li>Wekelijkse check-in — slaap, voeding, herstel, doelen</li>
+        <li>Real-time aanpassingen op basis van progressie</li>
+        <li><strong style="color:var(--text);font-weight:500">Exclusief</strong> — alleen voor klanten in het traject</li>
+        <li>Altijd toegankelijk, overal ter wereld</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwho-section">
+  <div class="forwho-inner reveal">
+    <div>
+      <div class="section-label">Voor wie</div>
+      <h2 class="forwho-title">Voor ondernemers die willen <em>presteren</em> — privé en zakelijk.</h2>
+    </div>
+    <div>
+      <ul class="forwho-list">
+        <li>Je verdient <strong>€5.000+</strong> per maand</li>
+        <li>Je investeert in jezelf <strong>zonder twijfel</strong></li>
+        <li>Je weet dat je <strong>meer kan presteren</strong></li>
+        <li>Je hebt geen tijd voor <strong>generieke programma's</strong></li>
+        <li>Je wil resultaten, <strong>geen motivatiesessies</strong></li>
+        <li>Je bent bereid om <strong>het werk te doen</strong></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- GUARANTEE -->
+<section class="guarantee">
+  <div class="guarantee-bg"></div>
+  <div class="guarantee-overlay"></div>
+  <div class="guarantee-inner reveal">
+    <div class="section-label" style="justify-content:center">De belofte</div>
+    <h2 class="guarantee-title">Geen resultaat?<em>We gaan door.</em></h2>
+    <div class="g-line"></div>
+    <p class="guarantee-body">Als je het werk doet en na 90 dagen de afgesproken doelen niet gehaald zijn, gaan we door — <strong style="color:var(--text);font-weight:500">zonder extra kosten</strong> — tot je er staat. Dat is hoe sterk ik geloof in dit systeem.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding: 140px 48px; background: var(--dark); position:relative;">
+  <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold-border),transparent);"></div>
+  <div style="max-width:1100px; margin:0 auto;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;" class="faq-grid-mobile">
+
+      <div class="reveal">
+        <div class="section-label">FAQ</div>
+        <h2 style="font-family:'Syne',sans-serif; font-size:clamp(32px,4vw,52px); font-weight:800; text-transform:uppercase; letter-spacing:-0.02em; line-height:1.1;">
+          Veelgestelde<br><span style="color:var(--gold);">vragen.</span>
+        </h2>
+        <p style="font-size:14px; color:var(--text2); line-height:1.9; margin-top:24px;">Heb je een andere vraag? Stuur een DM via Instagram.</p>
+        <a href="https://www.instagram.com/momineofficial?igsh=MWN2ZWV3cmlzdHF1Ng%3D%3D&utm_source=qr" style="display:inline-block; margin-top:24px; font-size:10px; font-weight:500; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold); text-decoration:none; border-bottom:1px solid var(--gold-border); padding-bottom:2px;">@momineofficial →</a>
+      </div>
+
+      <div class="reveal" style="display:flex; flex-direction:column; gap:2px;">
+
+        <div style="background:var(--surface); border:1px solid var(--line); overflow:hidden;">
+          <details style="cursor:pointer;">
+            <summary style="padding:28px 32px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              Ik heb het druk. Past dit in mijn schema?
+              <span style="color:var(--gold); font-size:20px; flex-shrink:0; transition:transform 0.3s;">+</span>
+            </summary>
+            <div style="padding:0 32px 28px; font-size:14px; color:var(--text2); line-height:1.85; border-top:1px solid var(--line);">
+              <br>Het traject is gebouwd voor drukke ondernemers. De wekelijkse call is 30 minuten, de training past in elke agenda en alles staat klaar in de app. Jij bepaalt wanneer je traint.
+            </div>
+          </details>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--line); overflow:hidden;">
+          <details style="cursor:pointer;">
+            <summary style="padding:28px 32px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              Ik ben geen beginner maar ook geen gevorderde. Is dit voor mij?
+              <span style="color:var(--gold); font-size:20px; flex-shrink:0;">+</span>
+            </summary>
+            <div style="padding:0 32px 28px; font-size:14px; color:var(--text2); line-height:1.85; border-top:1px solid var(--line);">
+              <br>Ja. Het protocol wordt volledig afgestemd op jouw niveau — op basis van je bloedwaarden, conditie en ervaring. Geen generiek schema.
+            </div>
+          </details>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--line); overflow:hidden;">
+          <details style="cursor:pointer;">
+            <summary style="padding:28px 32px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              Wat als ik op reis ben of een drukke periode heb?
+              <span style="color:var(--gold); font-size:20px; flex-shrink:0;">+</span>
+            </summary>
+            <div style="padding:0 32px 28px; font-size:14px; color:var(--text2); line-height:1.85; border-top:1px solid var(--line);">
+              <br>We bouwen het systeem juist zó dat het werkt in jouw realiteit. Op reis, thuis of in het hotel — de app past zich aan.
+            </div>
+          </details>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--line); overflow:hidden;">
+          <details style="cursor:pointer;">
+            <summary style="padding:28px 32px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              Hoe verschilt dit van andere online coaches?
+              <span style="color:var(--gold); font-size:20px; flex-shrink:0;">+</span>
+            </summary>
+            <div style="padding:0 32px 28px; font-size:14px; color:var(--text2); line-height:1.85; border-top:1px solid var(--line);">
+              <br>We beginnen met je bloedwaarden — iets wat de meeste coaches nooit doen. Daarna is alles op maat: training, voeding, slaap, hormonen en mindset. Geen templates, geen groepscoaching.
+            </div>
+          </details>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--line); overflow:hidden;">
+          <details style="cursor:pointer;">
+            <summary style="padding:28px 32px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              Wanneer zie ik resultaten?
+              <span style="color:var(--gold); font-size:20px; flex-shrink:0;">+</span>
+            </summary>
+            <div style="padding:0 32px 28px; font-size:14px; color:var(--text2); line-height:1.85; border-top:1px solid var(--line);">
+              <br>De meeste klanten voelen al na 2-3 weken een verschil in energie en focus. Fysieke resultaten zijn zichtbaar rond week 6-8.
+            </div>
+          </details>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--line); overflow:hidden;">
+          <details style="cursor:pointer;">
+            <summary style="padding:28px 32px; font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;">
+              Wat als het traject niet werkt voor mij?
+              <span style="color:var(--gold); font-size:20px; flex-shrink:0;">+</span>
+            </summary>
+            <div style="padding:0 32px 28px; font-size:14px; color:var(--text2); line-height:1.85; border-top:1px solid var(--line);">
+              <br>Als je het werk doet en na 90 dagen de afgesproken doelen niet zijn gehaald, gaan we door — zonder extra kosten — tot je er staat.
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+
+    <div class="spots-block reveal">
+      <div class="spots-left">
+        <div class="spots-indicator">
+          <div class="spot-pip"></div>
+          <div class="spot-pip"></div>
+          <div class="spot-pip"></div>
+          <div class="spot-pip"></div>
+          <div class="spot-pip"></div>
+          <div class="spot-pip empty"></div>
+          <div class="spot-pip empty"></div>
+          <div class="spot-pip empty"></div>
+          <div class="spot-pip empty"></div>
+          <div class="spot-pip empty"></div>
+        </div>
+        <div>
+          <p class="spots-label">5 van de 10 spots beschikbaar</p>
+          <p class="spots-sub">Elk traject vereist een persoonlijk intake gesprek</p>
+        </div>
+      </div>
+      <a href="intake.html" class="btn-hero" style="flex-shrink:0">Claim je spot →</a>
+    </div>
+
+    <div class="pricing-header reveal" style="margin-top:40px">
+      <h2 class="pricing-header-title">Investering</h2>
+      <p class="pricing-note">Vul het intake formulier in.<br>Bij een goede fit starten we het traject.</p>
+    </div>
+
+    <div class="pricing-main reveal">
+      <div class="pricing-feature">
+        <p class="p-tag">Peak Performance Protocol</p>
+        <h3 class="p-name">Tier 3 — Volledig 1-op-1</h3>
+        <p class="p-sub">90 dagen · Exclusief traject</p>
+        <ul class="p-list">
+          <li><strong>Bloedwaarden analyse</strong> & persoonlijk protocol</li>
+          <li>Volledig gepersonaliseerd <strong>trainingsplan</strong></li>
+          <li><strong>Voedingsprotocol</strong> op maat</li>
+          <li>Slaap & <strong>energieoptimalisatie</strong></li>
+          <li>Wekelijkse <strong>1-op-1 calls</strong> (30 min)</li>
+          <li><strong>WhatsApp access</strong> maandag t/m vrijdag</li>
+          <li>Exclusieve <strong>app</strong> — training & voeding live</li>
+          <li>Exit systeem voor <strong>langetermijn resultaten</strong></li>
+        </ul>
+      </div>
+      <div class="pricing-cta">
+        <div>
+          <div class="price-amount"><span class="price-cur">€</span>3.500</div>
+          <p class="price-period">eenmalig · 90 dagen</p>
+          <div class="price-div"></div>
+          <p class="price-alt">Of <strong>€1.300 × 3</strong> maanden</p>
+        </div>
+        <div>
+          <a href="intake.html" class="btn-buy">Start het gesprek</a>
+          <p class="price-limit">⬤ 5 spots beschikbaar</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pricing-other reveal">
+      <div class="tier-card">
+        <p class="tier-label">Online Coaching</p>
+        <p class="tier-price">€750 <span>– €1.500</span></p>
+        <p class="tier-desc">6 weken begeleiding op afstand. Check-ins via app. Interesse? Stuur een DM.</p>
+      </div>
+      <div class="tier-card">
+        <p class="tier-label">Programma</p>
+          <p class="tier-price">€97</p>
+          <p class="tier-desc">Zelfstandig online programma. Training & voeding voor ondernemers. Inclusief toegang tot de gratis community. Interesse? Stuur een DM.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-brand">Momine</span>
+  <div class="footer-links">
+    <a href="index.html" class="footer-link">Home</a>
+    <a href="online-coaching.html" class="footer-link">Online Coaching</a>
+    <a href="ebook-salespagina.html" class="footer-link">Ebook</a>
+    <a href="intake.html" class="footer-link">Intake</a>
+    <a href="mailto:info@mominept.nl" class="footer-link">info@mominept.nl</a>
+  </div>
+  <span class="footer-copy">© 2026 Momine — Peak Performance</span>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((e) => {
+    e.forEach(el => { if(el.isIntersecting) el.target.classList.add('visible'); });
+  }, { threshold: 0.07 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
